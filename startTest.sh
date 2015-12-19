@@ -8,7 +8,7 @@ echo 'Situation chosen : '
 read sit
 
 if [ "$2" != '' ] && [ -e "$2" ]; then
-	$1 $name/$algoPath < testInputs/situation$sit | tee $2/result_"$name"_Situation"$sit"
+	$1 < $($name/$algoPath < testInputs/situation$sit) | tee $2/result_"$name"_Situation"$sit"
 else
-	$1 $name/$algoPath < testInputs/situation$sit
+	$1 < $($name/$algoPath < testInputs/situation$sit)
 fi
