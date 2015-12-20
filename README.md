@@ -46,7 +46,7 @@ You clone this repository : **git clone https://github.com/Alkanoor/DijkstraCont
 
 You create a directory petitAgneauDu35 in the folder which contains this wonderful README (you may estimate the chance you have, it's my first Readme) : **mkdir petitAgneauDu35**
 
-You put all your c++ (nice) stuff, or javascript stuff (berk, I hope it'll crash **pitifully**), where you want in your directory.
+You put all your stuff (I'm so kind I let you program in javascript), where you want in your directory.
 You create an executable file (it obviously can be a scripted file if your langage can't be compiled, even if it is a shame) and put it in a random place, for example *petitAgneauDu35/bin/obviouslyTheBestAlgorithm*.
 
 You decide to test it on the first basic situation so you type **make run-graphical** and you enter following information :
