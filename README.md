@@ -22,11 +22,11 @@ A folder __testInputs__ which contains (as it's named) inputs for your program. 
 		
 	*v7 v8 -> end position of robot center (v7 = xPos, v8 = yPos)
 		
-	*v9+4*i v10+4*i v11+4*i v12+4*i -> positions of center of obstacles and half sizes (v9 = xPosCenter, v10 = half width, v11 = yPosCenter, v12 = half height)
+	*v9+5*i v10+5*i v11+5*i v12+5*i v13+5*i -> positions of center of obstacles and half sizes (v9 = xPosCenter, v10 = half width, v11 = yPosCenter, v12 = half height, v13 = angle in degrees)
 		
 A folder __results__ which contains the result of timed tests (your program will be run the maximum number of times during 10 seconds)
 	
-2 folders which contain the code used to draw the result of your program for the wanted input and to compute the speed of your program, you can look at them if you are interested by the code, but please don't modify them or I'll be compelled to hate you. You can use **make run-graphical** or **make run-timed** in order to easily run the 2 programs.
+2 folders which contain the code used to draw the result of your program for the wanted input and to compute the speed of your program, you can look at them if you are interested by the code, but please don't modify them or I'll be compelled to hate you. You can use **make run-graphical**, **make run-graphical-withEnvironment**, **run-timed** or **make run-timed-withEnvironment** in order to easily run the 2 programs.
 
 ####2.The second one is yours : anyone can create his folder (please name it with *something that can identify you*).
 
@@ -65,4 +65,6 @@ You decide to test it on the first basic situation so you type **make run-graphi
 You should observe a beautiful straight line between the starting point and the ending point, if your algo is not too bad.
 
 You decide to compare your parts to other's, so you type **make run-timed** and you enter the same information as previously, or you decide to test program from another dude. Result of the test is in folder results.
+
+If you're bored to enter the same information everytime, you can export variables *NAME*, *ALGO_PATH*, *SITUATION_INDEX* and *DELAY*, and run **make run-graphical-withEnvironment** or **make run-timed-withEnvironment**.
 
