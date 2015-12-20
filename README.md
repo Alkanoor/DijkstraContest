@@ -4,7 +4,7 @@ Contest to see who has the best dijkstra algo
 Dependancies : Please install *libsfml-dev* or execute *sudo make configure* __before__ executing make
 
 The goal of this repository is to have a *nice* and *fast* path-finder algo which would allow our robot to pown ennemies.
-In order to get that, this is a little contest, and everyone can participate.
+In order to get that, this is a little contest, anyone can participate.
 
 This repository is composed of 2 parts :
 
@@ -16,13 +16,13 @@ A folder __testInputs__ which contains (as it's named) inputs for your program. 
 	
 	*v1 v2 -> size of table : objects will be drawn in the area (0-v1) (0-v2)
 		
-	*v3 v4 -> size of the robot (v3 = width, v4 = height)
+	*v3 -> radius of the robot (robot is represented as a circle)
 		
-	*v5 v6 -> start position of robot center (v5 = xPos, v6 = yPos)
+	*v4 v5 -> start position of robot center (v4 = xPos, v5 = yPos)
 		
-	*v7 v8 -> end position of robot center (v7 = xPos, v8 = yPos)
+	*v6 v7 -> end position of robot center (v6 = xPos, v7 = yPos)
 		
-	*v9+5*i v10+5*i v11+5*i v12+5*i v13+5*i -> positions of center of obstacles and half sizes (v9 = xPosCenter, v10 = half width, v11 = yPosCenter, v12 = half height, v13 = angle in degrees)
+	*v8+5*i v9+5*i v10+5*i v11+5*i v12+5*i -> positions of center of obstacles and half sizes (v8 = xPosCenter, v9 = half width, v10 = yPosCenter, v11 = half height, v12 = angle in degrees)
 		
 A folder __results__ which contains the result of timed tests (your program will be run the maximum number of times during 10 seconds)
 	
