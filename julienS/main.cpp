@@ -5,18 +5,24 @@
 
 int main(int argc, char* argv[])
 {
-    std::ofstream log("log.txt",std::ios::out|std::ios::app);
+    float tableWidth, tableHeight;
+    float robotWidth, robotHeight;
+    float startX, startY, endX, endY;
 
-    log<<argc<<std::endl;
-    for(int i=0;i<argc;i++)
-        log<<argv[i]<<std::endl;
+    std::cin>>tableWidth;
+    std::cin>>tableHeight;
+    std::cin>>robotWidth;
+    std::cin>>robotHeight;
+    std::cin>>startX;
+    std::cin>>startY;
+    std::cin>>endX;
+    std::cin>>endY;
 
-    log<<"==============="<<std::endl;
-    float tmp;
+    std::cout<<startX<<" "<<startY<<" "<<endX<<" "<<endY<<std::endl;
+
+    /*float tmp;
     while(std::cin>>tmp)
-        log<<tmp<<std::endl;
-
-    usleep(200000);
+        std::cout<<tmp<<std::endl;*/
 
     return 0;
 }
