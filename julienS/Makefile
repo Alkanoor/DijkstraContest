@@ -8,13 +8,13 @@ VPATH=.:src
 
 RELEASE_DIR = bin
 RELEASE_DEBUG_DIR = binDebug
-EXEC =$(RELEASE_DIR)/timeShortest
-EXEC_DEBUG =$(RELEASE_DEBUG_DIR)/timeShortest
+EXEC =$(RELEASE_DIR)/myAlgo
+EXEC_DEBUG =$(RELEASE_DEBUG_DIR)/myAlgo
 
 
 CC = g++
-CFLAGS = -pthread -std=c++11 -Wall -Werror -O1
-LDFLAGS = -pthread -std=c++11
+CFLAGS = -Wall -Werror -O1
+LDFLAGS =
 LDFLAGS_DEBUG = -g
 
 

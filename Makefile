@@ -17,6 +17,7 @@ all :
 
 clean :
 	@rm -rf $(RELEASE_DIR)
+	@rm $(TEST_DIR)/*
 	@(cd $(PERFORM_GRAPHICAL) && $(MAKE) clean)
 	@(cd $(PERFORM_TIMED) && $(MAKE) clean)
 
