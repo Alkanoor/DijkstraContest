@@ -13,7 +13,7 @@ EXEC_DEBUG =$(RELEASE_DEBUG_DIR)/drawShortest
 
 
 CC = g++
-CFLAGS = -Wall -Werror -O1
+CFLAGS = -std=c++11 -Wall -Werror -O1
 LDFLAGS = -lsfml-graphics -lsfml-window -lsfml-system
 LDFLAGS_DEBUG = -g -lsfml-graphics-d -lsfml-window-d -lsfml-system-d
 

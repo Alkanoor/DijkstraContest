@@ -6,19 +6,18 @@
 int main(int argc, char* argv[])
 {
     float tableWidth, tableHeight;
-    float robotWidth, robotHeight;
+    float robotRadius;
     float startX, startY, endX, endY;
 
     std::cin>>tableWidth;
     std::cin>>tableHeight;
-    std::cin>>robotWidth;
-    std::cin>>robotHeight;
+    std::cin>>robotRadius;
     std::cin>>startX;
     std::cin>>startY;
     std::cin>>endX;
     std::cin>>endY;
 
-    std::cout<<startX<<" "<<startY<<" "<<endX<<" "<<endY<<std::endl;
+    std::cout<<startX<<" "<<startY<<" "<<200<<" "<<50<<" "<<295<<" "<<280<<" "<<endX<<" "<<endY<<std::endl;
 
     /*float tmp;
     while(std::cin>>tmp)

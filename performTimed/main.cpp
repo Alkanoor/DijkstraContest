@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
     while(std::cin>>tmp)
         input.push_back(tmp);
 
-    if(input.size()<8)
+    if(input.size()<7)
     {
         std::cout<<"There isn't enough information in input, please check the format"<<std::endl;
         return 0;

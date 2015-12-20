@@ -3,6 +3,9 @@
 #include <vector>
 #include <string>
 
+#include "include/customWindow.hpp"
+
+
 int main()
 {
     std::string firstString, secondString;
@@ -22,13 +25,16 @@ int main()
     while(iss2>>f)
         situation.push_back(f);
 
-    std::cout<<"Points : "<<std::endl;
-    for(unsigned int i=0;i<points.size();i++)
-        std::cout<<points[i]<<" ";
-    std::cout<<std::endl<<"Situation : "<<std::endl;
-    for(unsigned int i=0;i<situation.size();i++)
-        std::cout<<situation[i]<<" ";
-    std::cout<<std::endl;
+    if(situation.size()<7)
+    {
+        std::cerr<<"There is not enough parameters for simulation, if this was run with makefile please check everything that can be checked, that's not normal"<<std::endl;
+        exit(-1);
+    }
+
+    CustomWindow window(800,600,"Graphical result");
+    window.setEnvironment(situation);
+    window.setTrajectory(points);
+    window.runUntilQuit();
 
     return 0;
 }

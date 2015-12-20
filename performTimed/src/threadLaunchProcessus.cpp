@@ -65,6 +65,8 @@ void ThreadLaunchProcessus::runThread()
             dup2(pipeParentToChild[0],0);
             close(pipeParentToChild[0]);
 
+            close(1);
+
             char* args[] = {NULL};
             if(execv(nameProg.c_str(),args)<0)
             {
