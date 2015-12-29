@@ -6,4 +6,5 @@ SRC := $(wildcard *.c)
 main: $(SRC:%.c=%.o)
 
 clean:
-	rm main
+	rm -f $(SRC:%.c=%.o)
+	rm -f main
