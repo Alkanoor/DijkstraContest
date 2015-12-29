@@ -1,8 +1,9 @@
-CC := gcc
-CFLAGS := -Wall -Wextra -Werror -std=gnu99 -O1
+CC := g++
+CFLAGS := -Wall -Wextra -std=c++11 -O1
+SRC := $(wildcard *.c)
 .PHONY: clean
 
-main: main.o
+main: $(SRC:%.c=%.o)
 
 clean:
 	rm main
