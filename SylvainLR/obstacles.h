@@ -5,16 +5,17 @@
 
 class Obstacle {
 private:
-	int x;
-	int y;
-	int width;
-	int height;
+	float x;
+	float y;
+	float halfWidth;
+	float halfHeight;
+	float angle;
 public:
-	Obstacle(int x, int y, int width, int heigth);
-	int getX() const;
-	int getY() const;
-	int getWidth() const;
-	int getHeight() const;
+	Obstacle(float x, float y, float width, float heigth, float angle);
+	float getX() const;
+	float getY() const;
+	float getWidth() const;
+	float getHeight() const;
 	void getCorners(Point out[]) const;
 };
 

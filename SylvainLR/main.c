@@ -3,21 +3,35 @@
 #include "obstacles.h"
 #include "point.h"
 
-void path(int xStart, int yStart, int xStop, int yStop, int nbObstacles, Obstacle obstacles[]);
+void path(float xStart, float yStart, float xStop, float yStop, int nbObstacles, Obstacle obstacles[]);
 
-int main(int argc, char* argv[])  {
-    if (argc < 2) {
-        return 1;
-    }
-	int xStart = atoi(argv[4]);
-	int yStart = atoi(argv[5]);
-	int xStop = atoi(argv[6]);
-	int yStop = atoi(argv[7]);
-    printf("%i %i\n", (xStart + xStop)/2, (yStart + yStop)/2);
+int main()  {
+	int check;
+	float xStart, yStart, xStop, yStop, trash,obstacle1x, obstacle1y, obstacle1HalfWidth, obstacle1HalfHeight, obstacle1Angle;
+	check = scanf("%f", &trash);
+	check += scanf("%f", &trash);
+	check += scanf("%f", &trash);
+	check += scanf("%f", &xStart);
+	check += scanf("%f", &yStart);
+	check += scanf("%f", &xStop);
+	check += scanf("%f", &yStop);
+	check += scanf("%f", &obstacle1x);
+	check += scanf("%f", &obstacle1HalfWidth);
+	check += scanf("%f", &obstacle1y);
+	check += scanf("%f", &obstacle1HalfHeight);
+	check += scanf("%f", &obstacle1Angle);
+	if (check != 12) {
+		return 1;
+	}
+	int nbObstacles = 1;
+	printf("%f %f 7.0 7.0", xStart, yStart);
+	Obstacle obs(obstacle1x, obstacle1y, obstacle1HalfWidth, obstacle1HalfHeight, obstacle1Angle);
+	Obstacle obstacles[1] = {obs};
+	path(xStart, yStart, xStop, yStop, nbObstacles, obstacles);
     return 0;
 }
 
-void path(int xStart, int yStart, int xStop, int yStop, int nbObstacles, Obstacle obstacles[]) {
+void path(float xStart, float yStart, float xStop, float yStop, int nbObstacles, Obstacle obstacles[]) {
 	for (int i = 0; i < nbObstacles; i++) {
 		Obstacle o = obstacles[i];
 		Point out[4] {Point(0,0), Point(0,0), Point(0,0), Point(0,0)};
@@ -33,5 +47,5 @@ void path(int xStart, int yStart, int xStop, int yStop, int nbObstacles, Obstacl
 			}
 		}
 	}
-	printf("%i %i", xStop, yStop);
+	printf("%f %f ", xStop, yStop);
 }

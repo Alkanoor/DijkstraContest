@@ -4,8 +4,8 @@
 class Point {
 private:
 public:
- int x, y;
- Point (int x, int y);
+ float x, y;
+ Point (float x, float y);
 };
 
 #endif
