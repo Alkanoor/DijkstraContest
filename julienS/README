@@ -1,0 +1,1 @@
+Au debut je voulais faire un dijkstra abstrait avec très peu de sommets, mais c'est vrai que dans un premier temps un A* suffira amplement et simplifiera grandement le problème.
