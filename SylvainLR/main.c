@@ -3,21 +3,22 @@
 #include "obstacles.h"
 #include "point.h"
 #include <vector>
-
+#include "path.h"
+#include <sstream>
 using namespace std;
-
-void path(float xStart, float yStart, float xStop, float yStop, int nbObstacles, vector<Obstacle> obstacles, int output = 0);
 
 int main()  {
 	int check;
-	float xStart, yStart, xStop, yStop, trash,obstaclex, obstacley, obstacleHalfWidth, obstacleHalfHeight, obstacleAngle;
-	check = scanf("%f", &trash);
-	check = scanf("%f", &trash);
-	check = scanf("%f", &trash);
+	float xStart, yStart, xStop, yStop, tableWidth, tableHeight, radius, obstaclex, obstacley, obstacleHalfWidth, obstacleHalfHeight, obstacleAngle;
+	check = scanf("%f", &tableWidth);
+	check = scanf("%f", &tableHeight);
+	check = scanf("%f", &radius);
 	check = scanf("%f", &xStart);
 	check = scanf("%f", &yStart);
+	Point start(xStart, yStart);
 	check = scanf("%f", &xStop);
 	check = scanf("%f", &yStop);
+	Point stop(xStop, yStop);
 	check = scanf("%f", &obstaclex);
 	int nbObstacles = 0;
 	vector<Obstacle> obstacles;
@@ -32,28 +33,7 @@ int main()  {
 		check = scanf("%f", &obstaclex);
 	}
 	printf("%f %f ", xStart, yStart);
-	path(xStart, yStart, xStop, yStop, nbObstacles, obstacles);
+	stringstream ss;
+	path(start, stop, nbObstacles, obstacles, ss);
     return 0;
-}
-
-void path(float xStart, float yStart, float xStop, float yStop, int nbObstacles, vector<Obstacle> obstacles, int output) {
-	for (int i = 0; i < nbObstacles; i++) {
-		Obstacle o = obstacles[i];
-		Point out[4] {Point(0,0), Point(0,0), Point(0,0), Point(0,0)};
-		o.getCorners(out);
-		//for (int j = 0; j < 4; j++)
-		//{
-			//Point c = out[j];
-			Point c = out[0];
-			if ((xStart < c.x && xStop > c.x) || (xStop < c.x && xStart > c.x)) {
-				if ((yStart < c.y && yStop > c.y) || (yStop < c.x && yStart > c.y)) {
-					path(xStart, yStart, c.x, c.y, nbObstacles, obstacles, 1);
-					path(c.x, c.y, xStop, yStop, nbObstacles, obstacles, 1);
-				}
-			}
-		//}
-	}
-	if (output) {
-		printf("%f %f ", xStop, yStop);
-	}
 }
