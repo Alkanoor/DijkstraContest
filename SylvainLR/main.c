@@ -5,6 +5,7 @@
 #include <vector>
 #include "path.h"
 #include <sstream>
+#include <iostream>
 using namespace std;
 
 int main()  {
@@ -19,10 +20,9 @@ int main()  {
 	check = scanf("%f", &xStop);
 	check = scanf("%f", &yStop);
 	Point stop(xStop, yStop);
-	check = scanf("%f", &obstaclex);
 	int nbObstacles = 0;
 	vector<Obstacle> obstacles;
-	while (check != 0) {
+	while (cin >> obstaclex) {
 		check = scanf("%f", &obstacleHalfWidth);
 		check = scanf("%f", &obstacley);
 		check = scanf("%f", &obstacleHalfHeight);
@@ -30,10 +30,9 @@ int main()  {
 		Obstacle obs(obstaclex, obstacley, obstacleHalfWidth, obstacleHalfHeight, obstacleAngle);
 		obstacles.push_back(obs);
 		nbObstacles++;
-		check = scanf("%f", &obstaclex);
 	}
 	printf("%f %f ", xStart, yStart);
 	stringstream ss;
-	path(start, stop, nbObstacles, obstacles, ss);
-    return 0;
+	path(start, stop, nbObstacles, obstacles/*, ss*/);
+	return 0;
 }
