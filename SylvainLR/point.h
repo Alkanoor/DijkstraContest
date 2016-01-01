@@ -6,6 +6,7 @@ private:
 public:
  float x, y;
  Point (float x, float y);
+ void print();
 };
 
 #endif

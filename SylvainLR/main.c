@@ -8,11 +8,13 @@
 #include <iostream>
 using namespace std;
 
+float xMax, yMax;
+
 int main()  {
 	int check;
-	float xStart, yStart, xStop, yStop, tableWidth, tableHeight, radius, obstaclex, obstacley, obstacleHalfWidth, obstacleHalfHeight, obstacleAngle;
-	check = scanf("%f", &tableWidth);
-	check = scanf("%f", &tableHeight);
+	float xStart, yStart, xStop, yStop, radius, obstaclex, obstacley, obstacleHalfWidth, obstacleHalfHeight, obstacleAngle;
+	check = scanf("%f", &xMax);
+	check = scanf("%f", &yMax);
 	check = scanf("%f", &radius);
 	check = scanf("%f", &xStart);
 	check = scanf("%f", &yStart);
