@@ -8,7 +8,7 @@
 
 using namespace std;
 
-extern float xMax, yMax;
+extern float xMax, yMax, radius;
 
 void path(Point start, Point stop, int nbObstacles, vector<Obstacle> obstacles,/* stringstream ss,*/ int output) {
 	Point out[4] = {Point(0,0), Point(0,0), Point(0,0), Point(0,0)};
@@ -39,7 +39,10 @@ void path(Point start, Point stop, int nbObstacles, vector<Obstacle> obstacles,/
 				}
 			}
 			int k = 0;
-			while ((start.x == out[j].x && start.y == out[j].y) || (stop.x == out[j].x && stop.y == out[j].y) || (out[j].x < 0 || out[j].x > xMax || out[j].y < 0 || out[j].y > yMax)) {
+			while ((start.x == out[j].x && start.y == out[j].y)
+				|| (stop.x == out[j].x && stop.y == out[j].y)
+				|| (out[j].x < radius || out[j].x > xMax - radius
+					|| out[j].y < radius || out[j].y > yMax - radius)) {
 				j++;
 				j = j%4;
 				k++;
@@ -47,7 +50,9 @@ void path(Point start, Point stop, int nbObstacles, vector<Obstacle> obstacles,/
 					return;
 				}
 			}
+			sleep(1);
 			path(start, out[j], nbObstacles, obstacles);
+			//printf("222222222222222222222");
 			path(out[j], stop, nbObstacles, obstacles);
 			return;
 		}
