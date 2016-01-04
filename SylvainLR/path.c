@@ -50,7 +50,7 @@ void path(Point start, Point stop, int nbObstacles, vector<Obstacle> obstacles,/
 					return;
 				}
 			}
-			sleep(1);
+			//sleep(1);
 			path(start, out[j], nbObstacles, obstacles);
 			//printf("222222222222222222222");
 			path(out[j], stop, nbObstacles, obstacles);
@@ -59,7 +59,7 @@ void path(Point start, Point stop, int nbObstacles, vector<Obstacle> obstacles,/
 	}
 	//En l'absence d'obstacles sur la route
 	if (output) {
-		printf("%f %f ", stop.x, stop.y);
+		printf("%f %f \n", stop.x, stop.y);
 	}
 }
 
@@ -110,8 +110,9 @@ int intersect(Point start, Point stop, Obstacle o) {
 					start.print();
 					printf("stop ");
 					stop.print();
-					printf("2.02 * x = %f 0.98 * x = %f\n", 1.02 * x, 0.98 * x);*/
-				    if ((start.x < 0.98 * x && stop.x > 1.02 * x) || (start.x > 1.02 * x && stop.x < 0.98 * x)) {
+					printf("1.02 * x = %f 0.98 * x = %f\n", 1.02 * x, 0.98 * x);*/
+				    if (((start.x < 0.98 * x && stop.x > 1.02 * x) || (start.x > 1.02 * x && stop.x < 0.98 * x))
+						&& ((c1.x < 0.98 * x && c2.x > 1.02 * x) || (c1.x > 1.02 * x && c2.x < 0.98 * x))) {
 					    //printf("return\n");
 						return 1;
 				    }
