@@ -33,6 +33,17 @@ int main()  {
 		obstacles.push_back(obs);
 		nbObstacles++;
 	}
+	/*Point out[4] = {Point(0,0), Point(0,0), Point(0,0), Point(0,0)};
+	obstacles[0].getCorners(out);
+	printf("top left : ");
+	out[0].print();
+	printf("top right : ");
+	out[1].print();
+	printf("bottom right : ");
+	out[2].print();
+	printf("bottom left : ");
+	out[3].print();
+	*/
 	printf("%f %f ", xStart, yStart);
 	stringstream ss;
 	path(start, stop, nbObstacles, obstacles/*, ss*/);
