@@ -41,16 +41,17 @@ float Obstacle::getHeight() const{
 }
 
 void Obstacle::getCorners(Point out[]) const{
+	float margin = radius/5;
 	//Top Left Corner
-	out[0].x = this->x - (this->halfWidth * dcos(-this->angle) + this->halfHeight * dsin(-this->angle)) - radius;
-	out[0].y = this->y + (this->halfHeight * dcos(-this->angle) - this->halfWidth * dsin(-this->angle)) + radius;
+	out[0].x = this->x - (this->halfWidth * dcos(-this->angle) + this->halfHeight * dsin(-this->angle)) - radius - margin;
+	out[0].y = this->y + (this->halfHeight * dcos(-this->angle) - this->halfWidth * dsin(-this->angle)) + radius + margin;
 	//Top Right Corner
-	out[1].x = this->x + (this->halfWidth * dcos(-this->angle) + this->halfHeight * dsin(-this->angle)) + radius;
-	out[1].y = this->y + (this->halfHeight * dcos(-this->angle) - this->halfWidth * dsin(-this->angle)) + radius;
+	out[1].x = this->x + (this->halfWidth * dcos(-this->angle) + this->halfHeight * dsin(-this->angle)) + radius + margin;
+	out[1].y = this->y + (this->halfHeight * dcos(-this->angle) - this->halfWidth * dsin(-this->angle)) + radius + margin;
 	//Bottom Right Corner
-	out[2].x = this->x + (this->halfWidth * dcos(-this->angle) + this->halfHeight * dsin(-this->angle)) + radius;
-	out[2].y = this->y - (this->halfHeight * dcos(-this->angle) - this->halfWidth * dsin(-this->angle)) - radius;
+	out[2].x = this->x + (this->halfWidth * dcos(-this->angle) + this->halfHeight * dsin(-this->angle)) + radius + margin;
+	out[2].y = this->y - (this->halfHeight * dcos(-this->angle) - this->halfWidth * dsin(-this->angle)) - radius - margin;
 	//Bottom Left Corner
-	out[3].x = this->x - (this->halfWidth * dcos(-this->angle) + this->halfHeight * dsin(-this->angle)) - radius;
-	out[3].y = this->y - (this->halfHeight * dcos(-this->angle) - this->halfWidth * dsin(-this->angle)) - radius;
+	out[3].x = this->x - (this->halfWidth * dcos(-this->angle) + this->halfHeight * dsin(-this->angle)) - radius - margin;
+	out[3].y = this->y - (this->halfHeight * dcos(-this->angle) - this->halfWidth * dsin(-this->angle)) - radius - margin;
 }
