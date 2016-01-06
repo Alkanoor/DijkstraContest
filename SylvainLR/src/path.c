@@ -59,7 +59,7 @@ void path(Point start, Point stop, int nbObstacles, vector<Obstacle> obstacles,/
 	}
 	//En l'absence d'obstacles sur la route
 	if (output) {
-		printf("%f %f \n", stop.x, stop.y);
+		stop.print();
 	}
 }
 

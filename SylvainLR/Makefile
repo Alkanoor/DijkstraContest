@@ -4,6 +4,7 @@ SRC := $(wildcard src/*.c)
 .PHONY: clean
 
 main: $(SRC:%.c=%.o)
+	$(CC) $(CFLAGS) -o $@ $^
 
 clean:
 	rm -f $(SRC:%.c=%.o)
