@@ -3,8 +3,8 @@ PERFORM_TIMED = performTimed
 GRAPHICAL_EXE = drawShortest
 TIMER_EXE = timeShortest
 
-SUBFOLDERS_MAKE = $(PERFORM_GRAPHICAL).make $(PERFORM_TIMED).make julienS.make
-SUBFOLDERS_MAKE_CLEAN = $(PERFORM_GRAPHICAL).make_clean $(PERFORM_TIMED).make_clean julienS.make_clean
+SUBFOLDERS_MAKE = $(PERFORM_GRAPHICAL).make $(PERFORM_TIMED).make julienS.make SylvainLR.make
+SUBFOLDERS_MAKE_CLEAN = $(PERFORM_GRAPHICAL).make_clean $(PERFORM_TIMED).make_clean julienS.make_clean SylvainLR.make_clean
 
 RELEASE_DIR = bin
 TEST_DIR = results
