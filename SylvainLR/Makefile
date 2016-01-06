@@ -1,6 +1,6 @@
 CC := g++
-CFLAGS := -Wall -Wextra -std=c++11 -O1
-SRC := $(wildcard *.c)
+CFLAGS := -iquote ./headers -Wall -Wextra -std=c++11 -O1
+SRC := $(wildcard src/*.c)
 .PHONY: clean
 
 main: $(SRC:%.c=%.o)
