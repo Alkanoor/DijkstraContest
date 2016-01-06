@@ -4,16 +4,11 @@
 #include "point.h"
 #include <vector>
 #include "path.h"
-#include <iostream>
 #include "run.h"
 
 using namespace std;
 
 float xMax, yMax, radius;
-
-void printPoint(float x, float y, ostream &s) {
-	s << x << " " << y << " ";
-}
 
 int run()  {
 	int check;
@@ -38,18 +33,7 @@ int run()  {
 		obstacles.push_back(obs);
 		nbObstacles++;
 	}
-	/*Point out[4] = {Point(0,0), Point(0,0), Point(0,0), Point(0,0)};
-	obstacles[0].getCorners(out);
-	printf("top left : ");
-	out[0].print();
-	printf("top right : ");
-	out[1].print();
-	printf("bottom right : ");
-	out[2].print();
-	printf("bottom left : ");
-	out[3].print();
-	*/
-	printPoint(xStart, yStart);
-	path(start, stop, nbObstacles, obstacles/*, ss*/);
+	start.print();
+	path(start, stop, nbObstacles, obstacles);
 	return 0;
 }
