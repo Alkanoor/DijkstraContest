@@ -6,6 +6,9 @@ SRC := $(wildcard src/*.c)
 main: $(SRC:%.c=%.o)
 	$(CC) $(CFLAGS) -o $@ $^
 
+lib:
+	ar -cvq libpath.a $(SRC:%.c=%.o)
+
 clean:
 	rm -f $(SRC:%.c=%.o)
 	rm -f main
