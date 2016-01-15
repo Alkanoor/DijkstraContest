@@ -10,7 +10,7 @@ using namespace std;
 
 extern float xMax, yMax, radius;
 
-void path(Point start, Point stop, int nbObstacles, vector<Obstacle> obstacles, vector<Point> points, int output) {
+void path(Point start, Point stop, int nbObstacles, vector<Obstacle> obstacles, vector<Point>* points, int output) {
 	Point out[4] = {Point(0,0), Point(0,0), Point(0,0), Point(0,0)};
 	/*printf("start ");
 	start.print();
@@ -58,7 +58,7 @@ void path(Point start, Point stop, int nbObstacles, vector<Obstacle> obstacles, 
 	//En l'absence d'obstacles sur la route
 	if (output) {
 		stop.print();
-		points.push_back(stop);
+		points->push_back(stop);
 	}
 }
 
