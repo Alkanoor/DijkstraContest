@@ -40,5 +40,10 @@ int run()  {
 	for (auto i : points) {
 		i.print(cout);
 	}
+	int size = points.size();
+	Point path[size];
+	for (int i = 0; i < size; i++) {
+		path[i] = points.at(i);
+	}
 	return 0;
 }
