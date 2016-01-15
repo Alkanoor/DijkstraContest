@@ -33,7 +33,9 @@ int run()  {
 		obstacles.push_back(obs);
 		nbObstacles++;
 	}
+	vector<Point> points = {};
 	start.print();
-	path(start, stop, nbObstacles, obstacles);
+	points.push_back(start);
+	path(start, stop, nbObstacles, obstacles, points);
 	return 0;
 }

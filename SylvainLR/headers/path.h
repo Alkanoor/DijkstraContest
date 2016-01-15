@@ -23,12 +23,13 @@
 #define PATH_H
 
 #include "obstacles.h"
+#include "point.h"
 #include <vector>
 #include <ostream>
 #include <sstream>
 
 //The main function, the one that you really need
-void path(Point start, Point stop, int nbObstacles, std::vector<Obstacle> obstacles,/* std::stringstream ss,*/ int output = 1);
+void path(Point start, Point stop, int nbObstacles, std::vector<Obstacle> obstacles, std::vector<Point> points,int output = 1);
 //Give the euclidian distance between two points
 float distance(float xStart, float yStart, float xStop, float yStop);
 float distance(Point start, Point stop);
