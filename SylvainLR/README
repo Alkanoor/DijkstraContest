@@ -1,0 +1,7 @@
+This code can be used to find a path between a starting point and a destination.
+
+To build it, you just have to use "$ make" in a command line.
+Then, to run it, use "$ ./src/main"
+
+It works by virtualy drawing a line between starting point and destination and then deform it to follow the obstacles frontiers and spare it.
+Their is no guarantee for the path to be the shortest but, in many common cases, I think it's pretty good and efficient.
