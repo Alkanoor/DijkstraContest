@@ -28,6 +28,11 @@ class Obstacle
     public:
         Obstacle(float xPosCenter, float halfWidth, float yPosCenter, float halfHeight, float rotation);
 
+        Vec getCorner1() const;
+        Vec getCorner2() const;
+        Vec getCorner3() const;
+        Vec getCorner4() const;
+
         bool isInObstacle(float x, float y) const;
         const Rect& getBoundingBox() const;
 
@@ -37,6 +42,7 @@ class Obstacle
         Rect boundingBox;
         Vec tanVec[2];
         Vec point[2];
+        Vec pointBis[2];
 };
 
 

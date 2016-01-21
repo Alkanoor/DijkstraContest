@@ -10,11 +10,13 @@ AStar::AStar(unsigned int w, unsigned h, float xBeg, float yBeg, float xEnd, flo
 void AStar::resize(unsigned int w, unsigned h)
 {
     land.resize(h);
+    isNearCorner.resize(h);
     currentWeights.resize(h);
     currentParents.resize(h);
     for(unsigned int i=0;i<h;i++)
     {
         land[i].resize(w);
+        isNearCorner[i].resize(w);
         currentWeights[i].resize(w);
         currentParents[i].resize(w);
     }
@@ -23,6 +25,7 @@ void AStar::resize(unsigned int w, unsigned h)
         for(unsigned int j=0;j<currentWeights[i].size();j++)
         {
             land[i][j] = true;
+            isNearCorner[i][j] = 0;
             currentWeights[i][j] = -1;
             currentParents[i][j] = std::pair<int,int>(-1,-1);
         }
@@ -42,6 +45,33 @@ void AStar::update(const std::vector<Obstacle>& obstacles)
                 if(obstacles[i].isInObstacle(k,l)&&k>=0&&l>=0&&l<(int)land.size()&&k<(int)land[l].size())
                     land[l][k] = false;
     }
+
+    int radius = 14;
+    for(unsigned int i=0;i<obstacles.size();i++)
+    {
+        Vec v = obstacles[i].getCorner1();
+        for(int o=v.y-radius;o<=v.y+radius;o++)
+            for(int p=v.x-radius;p<=v.x+radius;p++)
+                if(o>=0&&p>=0&&o<(int)isNearCorner.size()&&p<(int)isNearCorner[o].size())
+                    isNearCorner[o][p] = (i+1)*4;
+        v = obstacles[i].getCorner2();
+        for(int o=v.y-radius;o<=v.y+radius;o++)
+            for(int p=v.x-radius;p<=v.x+radius;p++)
+                if(o>=0&&p>=0&&o<(int)isNearCorner.size()&&p<(int)isNearCorner[o].size())
+                    isNearCorner[o][p] = (i+1)*4+1;
+        v = obstacles[i].getCorner3();
+        for(int o=v.y-radius;o<=v.y+radius;o++)
+            for(int p=v.x-radius;p<=v.x+radius;p++)
+                if(o>=0&&p>=0&&o<(int)isNearCorner.size()&&p<(int)isNearCorner[o].size())
+                    isNearCorner[o][p] = (i+1)*4+2;
+        v = obstacles[i].getCorner4();
+        for(int o=v.y-radius;o<=v.y+radius;o++)
+            for(int p=v.x-radius;p<=v.x+radius;p++)
+                if(o>=0&&p>=0&&o<(int)isNearCorner.size()&&p<(int)isNearCorner[o].size())
+                    isNearCorner[o][p] = (i+1)*4+3;
+    }
+
+    this->obstacles = obstacles;
 }
 
 void AStar::update(std::pair<float,float> initialPos, std::pair<float,float> finalPos)
@@ -123,15 +153,30 @@ void AStar::constructPath()
     currentPath.push_back(finalPos);
     unsigned int i=0;
 
+    int last = -1;
     while(curElement.first>=0&&curElement.second>=0&&currentWeights[curElement.second][curElement.first]>0)
     {
-        while((int)currentPath[i].first==curElement.first||(int)currentPath[i].second==curElement.second)
-            curElement = currentParents[curElement.second][curElement.first];
-        if(curElement.first>=0&&curElement.second>=0)
-            currentPath.push_back(curElement);
-        i++;
+        curElement = currentParents[curElement.second][curElement.first];
+        if(curElement.first>=0&&curElement.second>=0&&curElement.second<(int)isNearCorner.size()&&curElement.first<(int)isNearCorner[curElement.second].size()&&isNearCorner[curElement.second][curElement.first]>0)
+        {
+            if(last!=(int)isNearCorner[curElement.second][curElement.first])
+            {
+                Vec v;
+                if(!(isNearCorner[curElement.second][curElement.first]%4))
+                    v = obstacles[(int)(isNearCorner[curElement.second][curElement.first]/4)-1].getCorner1();
+                else if((isNearCorner[curElement.second][curElement.first]%4)==1)
+                    v = obstacles[(int)(isNearCorner[curElement.second][curElement.first]/4)-1].getCorner2();
+                else if((isNearCorner[curElement.second][curElement.first]%4)==2)
+                    v = obstacles[(int)(isNearCorner[curElement.second][curElement.first]/4)-1].getCorner3();
+                else
+                    v = obstacles[(int)(isNearCorner[curElement.second][curElement.first]/4)-1].getCorner4();
+                currentPath.push_back(std::pair<float,float>(v.x,v.y));
+                last = isNearCorner[curElement.second][curElement.first];
+                i++;
+            }
+        }
     }
     currentPath.push_back(initialPos);
 
-    std::reverse(currentPath.begin(),currentPath.end());
+    //std::reverse(currentPath.begin(),currentPath.end());
 }

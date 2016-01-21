@@ -27,8 +27,10 @@ class AStar
         std::pair<float,float> initialPos;
         std::pair<float,float> finalPos;
 
+        std::vector<Obstacle> obstacles;
         std::vector<std::vector<bool> > land;
         std::vector<std::vector<int> > currentWeights;
+        std::vector<std::vector<unsigned int> > isNearCorner;
         std::vector<std::vector<std::pair<int,int> > > currentParents;
         std::priority_queue<CustomTuple> currentQueue;
 

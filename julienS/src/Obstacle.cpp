@@ -14,7 +14,7 @@ Rect::Rect(float x, float y, float w, float h)
     this->w = w;
     this->h = h;
 }
-
+#include <iostream>
 Obstacle::Obstacle(float xPosCenter, float halfWidth, float yPosCenter, float halfHeight, float rotation)
 {
     this->xPosCenter = xPosCenter;
@@ -33,7 +33,22 @@ Obstacle::Obstacle(float xPosCenter, float halfWidth, float yPosCenter, float ha
     tanVec[1] = Vec(-cos(angle),sin(angle));
     point[0] = Vec(xPosCenter-halfWidth*cos(angle)+halfHeight*sin(angle),yPosCenter+halfWidth*sin(angle)+halfHeight*cos(angle));
     point[1] = Vec(2*xPosCenter-point[0].x,2*yPosCenter-point[0].y);
+    pointBis[0] = Vec(xPosCenter-halfWidth*cos(angle)-halfHeight*sin(angle),yPosCenter+halfWidth*sin(angle)-halfHeight*cos(angle));
+    pointBis[1] = Vec(2*xPosCenter-pointBis[0].x,2*yPosCenter-pointBis[0].y);
+    //std::cout<<angle<<"  "<<halfWidth<<" "<<halfHeight<<"  "<<point[0].x<<" "<<point[0].y<<" "<<pointBis[0].x<<" "<<pointBis[0].y<<std::endl;
 }
+
+Vec Obstacle::getCorner1() const
+{return point[0];}
+
+Vec Obstacle::getCorner2() const
+{return pointBis[0];}
+
+Vec Obstacle::getCorner3() const
+{return point[1];}
+
+Vec Obstacle::getCorner4() const
+{return pointBis[1];}
 
 bool Obstacle::isInObstacle(float x, float y) const
 {
