@@ -46,7 +46,7 @@ void AStar::update(const std::vector<Obstacle>& obstacles)
                     land[l][k] = false;
     }
 
-    int radius = 14;
+    int radius = 15;
     for(unsigned int i=0;i<obstacles.size();i++)
     {
         Vec v = obstacles[i].getCorner1();
@@ -143,6 +143,7 @@ void AStar::browse()
 const std::vector<std::pair<float,float> >& AStar::getPath()
 {return currentPath;}
 
+#include <iostream>
 void AStar::constructPath()
 {
     currentPath.clear();
@@ -178,5 +179,57 @@ void AStar::constructPath()
     }
     currentPath.push_back(initialPos);
 
-    //std::reverse(currentPath.begin(),currentPath.end());
+    std::reverse(currentPath.begin(),currentPath.end());
+    clearPath(0);
+    //std::cout<<currentPath.size()<<std::endl;
+}
+
+void AStar::clearPath(unsigned int i)
+{
+    if(i+2<currentPath.size())
+    {
+	std::pair<float,float> v1, v2, v3;
+	v1 = currentPath[i];
+	v2 = currentPath[i+1];
+	v3 = currentPath[i+2];
+	std::pair<float,float> proj = AStar::proj(v2.first,v2.second,v1.first,v1.second,v3.first,v3.second);
+	int x=0, y=0;
+	bool isOk = true;
+        for(unsigned int j=1;j<NUMBER_POINTS_SAFE-1&&isOk;j++)
+	{
+	    x = proj.first+(float)j/(float)(NUMBER_POINTS_SAFE-1)*(v2.first-proj.first);
+	    y = proj.second+(float)j/(float)(NUMBER_POINTS_SAFE-1)*(v2.second-proj.second);
+	    if(y>0&&x>0&&y<(int)land.size()&&x<(int)land[y].size()&&!land[y][x])
+		isOk = false;
+	}
+        if(isOk)
+	{
+	    for(unsigned int j=i+1;j+1<currentPath.size();j++)
+		currentPath[j] = currentPath[j+1];
+	    currentPath.resize(currentPath.size()-1);
+	}
+	clearPath(i+1);
+    }
+}
+
+std::pair<float,float> AStar::proj(float x, float y, float x1, float y1, float x2, float y2)
+{
+    float a = x-x1;
+    float b = y-y1;
+    float c = x2-x1;
+    float d = y2-y1;
+    float dot = a*c+b*d;
+    float len = c*c+d*d;
+    float p = -1;
+    if(len != 0)
+	p = dot/len;
+    
+    if(p<0)
+    	p = 0;
+    if(p>1)
+	p = 1;
+
+    float projX = x1 + p*c;
+    float projY = y1 + p*d;
+    return std::pair<float,float>(projX, projY);
 }

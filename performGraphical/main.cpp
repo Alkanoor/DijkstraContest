@@ -31,7 +31,7 @@ int main()
         exit(-1);
     }
 
-    CustomWindow window(800,600,"Graphical result");
+    CustomWindow window(900,600,"Graphical result");
     window.setEnvironment(situation);
     window.setTrajectory(points);
     window.runUntilQuit();

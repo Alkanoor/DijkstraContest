@@ -23,6 +23,8 @@ class AStar
         void browse();
         const std::vector<std::pair<float,float> >& getPath();
 
+        static std::pair<float,float> proj(float x, float y, float x1, float y1, float x2, float y2);
+
     private:
         std::pair<float,float> initialPos;
         std::pair<float,float> finalPos;
@@ -39,6 +41,7 @@ class AStar
 
         std::vector<std::pair<float,float> > currentPath;
         void constructPath();
+        void clearPath(unsigned int i=0);
 };
 
 

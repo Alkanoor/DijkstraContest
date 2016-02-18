@@ -2,6 +2,8 @@
 #define CUSTOMTUPLE_HPP
 
 
+#define NUMBER_POINTS_SAFE 10
+
 #include <cmath>
 
 
