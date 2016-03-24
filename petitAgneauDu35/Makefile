@@ -1,4 +1,4 @@
-CFLAGS := -std=gnu99 -Wall -Wextra
+CFLAGS := -std=gnu99 -Wall -Wextra -lm
 .PHONY := clean main
 
 main : dijkstra

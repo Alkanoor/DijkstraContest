@@ -25,15 +25,15 @@ typedef struct Obstacle {
 	int halfWidth;
 	int halfHeight;
 	int angle;
-	Point topLeft;
-	Point topRight;
-	Point bottomLeft;
-	Point bottomRight;
+	Point corners[4];
 } Obstacle;
 
 
 Node* nextPivot(Node* map[], int xMax, int yMax);
 void init_obstacle(Obstacle* obstacle, int xPos, int yPos, int halfWidth, int halfHeight, int angle);
+void set_obstacle(Node* map[], Obstacle* obstacle, int xMax, int yMax);
+int intersect(Point start, Node* stop, Obstacle* o);
+
 
 int main(int argc, char* argv[]) {
 	if (argc != 1) {
@@ -64,7 +64,7 @@ int main(int argc, char* argv[]) {
 		scanf("%i[ \n]", &halfWidth);
 		scanf("%i[ \n]", &yPos);
 		scanf("%i[ \n]", &halfHeight);
-		scanf("%i", &.angle);
+		scanf("%i", &angle);
 		init_obstacle(&obstacles[nbObstacles], xPos, yPos, halfWidth, halfHeight, angle);
 		nbObstacles++;
 	}
@@ -81,6 +81,11 @@ int main(int argc, char* argv[]) {
 			map[i * yMax + j]->pere = map[i * yMax + j];
 		}
 	}
+
+	for(int i = 0; i < nbObstacles; i++) {
+		set_obstacle(map, &obstacles[i], xMax, yMax);
+	}
+
 	//Initialisation du pivot initial (point de depart)
 	map[xStart * yMax + yStart]->A = 1;
 	map[xStart * yMax + yStart]->distance = 0;
@@ -98,7 +103,7 @@ int main(int argc, char* argv[]) {
 					x = pivot->x + j;
 					y = pivot->y + k;
 					//printf("x = %i, y = %i\n", x, y);
-					if (x >= 0 && x < xMax && y >= 0 && y < yMax) {
+					if (x >= 0 && x < xMax && y >= 0 && y < yMax && map[x * yMax + y]->accessible) {
 						cur = map[x * yMax + y];
 						if(pivot->distance + 1 < cur->distance) {
 							cur->distance = pivot->distance + 1;
@@ -169,7 +174,19 @@ int dcos (int angle) {
 }
 
 int dsin (int angle) {
-	return sin(angle * PI / 180):
+	return sin(angle * PI / 180);
+}
+
+int max(int a, int b) {
+	if (a < b)
+		return b;
+	return a;
+}
+
+int min(int a, int b) {
+	if (a < b)
+		return a;
+	return b;
 }
 
 void init_obstacle(Obstacle* obstacle, int xPos, int yPos, int halfWidth, int halfHeight, int angle) {
@@ -179,22 +196,107 @@ void init_obstacle(Obstacle* obstacle, int xPos, int yPos, int halfWidth, int ha
 	obstacle->halfHeight = halfHeight;
 	obstacle->angle = angle;
 	Point corner;
-	int radius = 0:
+	int radius = 0;
 	int margin = 0;
 	//Top Left Corner
 	corner.x = xPos - (halfWidth * dcos(-angle) - halfHeight * dsin(-angle)) - radius - margin;
 	corner.y = yPos + (halfHeight * dcos(-angle) + halfWidth * dsin(-angle)) + radius + margin;
-	obstacle->topLeft = corner;
+	obstacle->corners[0] = corner;
 	//Top Right Corner
 	corner.x = xPos + (halfWidth * dcos(-angle) + halfHeight * dsin(-angle)) + radius + margin;
 	corner.y = yPos + (halfHeight * dcos(-angle) - halfWidth * dsin(-angle)) + radius + margin;
-	obstacle->topRight = corner;
+	obstacle->corners[1] = corner;
 	//Bottom Right Corner
 	corner.x = xPos + (halfWidth * dcos(-angle) - halfHeight * dsin(-angle)) + radius + margin;
 	corner.y = yPos - (halfHeight * dcos(-angle) + halfWidth * dsin(-angle)) - radius - margin;
-	obstacle->bottomRight = corner;
+	obstacle->corners[2] = corner;
 	//Bottom Left Corner
 	corner.x = xPos - (halfWidth * dcos(-angle) + halfHeight * dsin(-angle)) - radius - margin;
 	corner.y = yPos - (halfHeight * dcos(-angle) - halfWidth * dsin(-angle)) - radius - margin;
-	obstacle->bottomLeft = corner;
+	obstacle->corners[3] = corner;
 }
+
+void set_obstacle(Node* map[], Obstacle* obstacle, int xMax, int yMax) {
+	//Test uniquement les points qui ont une chance d'etre dans l'obstacle
+	int half_diag = sqrt(obstacle->halfWidth * obstacle->halfWidth + obstacle->halfHeight * obstacle->halfHeight);
+	Point origine = {0, 0};
+	for (int i = max(0, obstacle->xPos - half_diag); i < min (xMax, obstacle->xPos + half_diag); i++) {
+		for (int j = max(0, obstacle->yPos - half_diag); j < min (yMax, obstacle->yPos + half_diag); j++) {
+			if(intersect(origine, map[i * yMax + j], obstacle) % 2) {
+				//Nombre impair d'intersection -> point à l'intérieur
+				map[i * yMax + j]->accessible = 0;
+			}
+		}
+	}
+}
+
+/*
+ * return 0 : pas d'intersection
+ * return 1-4 : intersection
+ * return 5 : erreur
+ */
+
+int intersect(Point start, Node* stop, Obstacle* o) {
+	//Droite start-stop : a1 X + b1 = Y
+	int intersection = 0;
+	if (start.x != stop->x) {
+		float a1 = (start.y - stop->y) / (start.x - stop->x);
+		float b1 = start.y - a1 * start.x;
+		for (int i = 0; i < 4; i++) {
+		    Point c1 = o->corners[i%4];
+		    Point c2 = o->corners[(i+1)%4];
+			//printf("i = %i\n", i);
+		    if (c1.x != c2.x) {
+				/*printf("c1 ");
+				c1.print();
+				printf("c2 ");
+				c2.print();*/
+			    float a2 = (c1.y - c2.y) / (c1.x - c2.x);
+			    if (a1 != a2) {
+				    float b2 = c1.y - a2 * c1.x;
+				    float x = (b2 - b1) / (a1 - a2);
+					//printf("x = %f\n", x);
+					/*printf("start ");
+					start.print();
+					printf("stop ");
+					stop.print();
+					printf("1.02 * x = %f 0.98 * x = %f\n", 1.02 * x, 0.98 * x);*/
+				    if (((start.x < 0.98 * x && stop->x > 1.02 * x) || (start.x > 1.02 * x && stop->x < 0.98 * x))
+						&& ((c1.x < 0.98 * x && c2.x > 1.02 * x) || (c1.x > 1.02 * x && c2.x < 0.98 * x))) {
+					    //printf("return\n");
+						intersection++;
+				    }
+			 	}
+		    } else {
+				if ((start.x < c1.x && stop->x > c1.x) || (start.x > c1.x && stop->x < c1.x)) {
+			    	float y = a1 * c1.x + b1;
+					//printf("y = %f c1.y = %f c2.y = %f\n", y, c1.y, c2.y);
+			    	if ((c1.y < 0.98 * y && c2.y > 1.02 * y) || (c1.y > 1.02 * y && c2.y < 0.98 * y)) {
+				   		intersection++;
+			    	}
+				}
+		    }
+		}
+		return 0;
+	} else {
+		//printf("else");
+		for (int i = 0; i < 4; i++) {
+			Point c1 = o->corners[i%4];
+			Point c2 = o->corners[(i+1)%4];
+			if ((c1.x < start.x && c2.x > start.x) || (c1.x > start.x && c2.x < start.x)) {
+				if (c1.x != c2.x) {
+					float a2 = (c1.y - c2.y) / (c1.x - c2.x);
+					float b2 = c1.y - a2 * c1.x;
+					float y = a2 * start.x + b2;
+					if ((start.y < y && stop->y > y) || (start.y > y && stop->y < y)) {
+						intersection++;
+					}
+				}
+			}
+		}
+		return 0;
+	}
+	//printf("error");
+	return 5;
+}
+
