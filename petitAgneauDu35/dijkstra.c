@@ -5,19 +5,18 @@
 #define PI 3.14159265
 #define INT_MAX 10000
 
-typedef struct Node {
-	int accessible;
-	int A;
-	int distance;
-	int x;
-	int y;
-	struct Node* pere;
-} Node;
-
 typedef struct Point {
 	int x;
 	int y;
  } Point;
+
+typedef struct Node {
+	int accessible;
+	int A;
+	int distance;
+	Point point;
+	struct Node* pere;
+} Node;
 
 typedef struct Obstacle {
 	int xPos;
@@ -32,8 +31,9 @@ typedef struct Obstacle {
 Node* nextPivot(Node* map[], int xMax, int yMax);
 void init_obstacle(Obstacle* obstacle, int xPos, int yPos, int halfWidth, int halfHeight, int angle);
 void set_obstacle(Node* map[], Obstacle* obstacle, int xMax, int yMax);
-int intersect(Point start, Node* stop, Obstacle* o);
-
+int isInside(Point, Obstacle*);
+int signof(int);
+int determinant(Point, Point, Point);
 
 int main(int argc, char* argv[]) {
 	if (argc != 1) {
@@ -76,8 +76,8 @@ int main(int argc, char* argv[]) {
 			map[i * yMax + j]->accessible = 1;
 			map[i * yMax + j]->A = 0;
 			map[i * yMax + j]->distance = INT_MAX;
-			map[i * yMax + j]->x = i;
-			map[i * yMax + j]->y = j;
+			map[i * yMax + j]->point.x = i;
+			map[i * yMax + j]->point.y = j;
 			map[i * yMax + j]->pere = map[i * yMax + j];
 		}
 	}
@@ -100,10 +100,10 @@ int main(int argc, char* argv[]) {
 			for (int k = -1; k <= 1; k++) {
 				//Sans compter le pivot evidemment
 				if (i != 0 || j != 0) {
-					x = pivot->x + j;
-					y = pivot->y + k;
+					x = pivot->point.x + j;
+					y = pivot->point.y + k;
 					//printf("x = %i, y = %i\n", x, y);
-					if (x >= 0 && x < xMax && y >= 0 && y < yMax && map[x * yMax + y]->accessible) {
+					if (x >= 0 && x < xMax && y >= 0 && y < yMax && map[x * yMax + y]->accessible && map[x * yMax + y]->A == 0) {
 						cur = map[x * yMax + y];
 						if(pivot->distance + 1 < cur->distance) {
 							cur->distance = pivot->distance + 1;
@@ -115,6 +115,8 @@ int main(int argc, char* argv[]) {
 		}
 		pivot = nextPivot(map, xMax, yMax);
 		pivot->A = 1;
+		if(pivot->point.x == xStop && pivot->point.y == yStop)
+			break;
 	}
 	
 	//Recuperation du nombre de noeuds sur le chemin
@@ -124,8 +126,8 @@ int main(int argc, char* argv[]) {
 	int nb = 1;
 	while(x != xStart || y != yStart) {
 		pere = map[x * yMax + y]->pere;
-		x = pere->x;
-		y = pere->y;
+		x = pere->point.x;
+		y = pere->point.y;
 		nb++;
 	}
 	//Recuperation des coordonnees successives des noeuds sur le chemin
@@ -137,8 +139,8 @@ int main(int argc, char* argv[]) {
 		path[2 * cnt - 1] = y;
 		path[2 * cnt - 2] = x;
 		pere = map[x * yMax + y]->pere;
-		x = pere->x;
-		y = pere->y;
+		x = pere->point.x;
+		y = pere->point.y;
 		cnt--;
 	}
 	path[0] = xStart;
@@ -157,7 +159,7 @@ Node* nextPivot(Node* map[], int xMax, int yMax) {
 	int freeMemory = 0;
 	pivot->distance = INT_MAX;
 	for (int i = 0; i < xMax * yMax; i++) {
-		if(map[i]->A == 0 && map[i]->distance < pivot->distance) {
+		if(map[i]->accessible == 1 && map[i]->A == 0 && map[i]->distance < pivot->distance) {
 			if (!freeMemory) {
 				//Release the memory allocated at the beginning
 				free(pivot);
@@ -219,11 +221,9 @@ void init_obstacle(Obstacle* obstacle, int xPos, int yPos, int halfWidth, int ha
 void set_obstacle(Node* map[], Obstacle* obstacle, int xMax, int yMax) {
 	//Test uniquement les points qui ont une chance d'etre dans l'obstacle
 	int half_diag = sqrt(obstacle->halfWidth * obstacle->halfWidth + obstacle->halfHeight * obstacle->halfHeight);
-	Point origine = {0, 0};
 	for (int i = max(0, obstacle->xPos - half_diag); i < min (xMax, obstacle->xPos + half_diag); i++) {
 		for (int j = max(0, obstacle->yPos - half_diag); j < min (yMax, obstacle->yPos + half_diag); j++) {
-			if(intersect(origine, map[i * yMax + j], obstacle) % 2) {
-				//Nombre impair d'intersection -> point à l'intérieur
+			if(isInside(map[i * yMax + j]->point, obstacle)) {
 				map[i * yMax + j]->accessible = 0;
 			}
 		}
@@ -231,72 +231,28 @@ void set_obstacle(Node* map[], Obstacle* obstacle, int xMax, int yMax) {
 }
 
 /*
- * return 0 : pas d'intersection
- * return 1-4 : intersection
- * return 5 : erreur
+ * return 0 : outside
+ * return 1 : inside
  */
-
-int intersect(Point start, Node* stop, Obstacle* o) {
-	//Droite start-stop : a1 X + b1 = Y
-	int intersection = 0;
-	if (start.x != stop->x) {
-		float a1 = (start.y - stop->y) / (start.x - stop->x);
-		float b1 = start.y - a1 * start.x;
-		for (int i = 0; i < 4; i++) {
-		    Point c1 = o->corners[i%4];
-		    Point c2 = o->corners[(i+1)%4];
-			//printf("i = %i\n", i);
-		    if (c1.x != c2.x) {
-				/*printf("c1 ");
-				c1.print();
-				printf("c2 ");
-				c2.print();*/
-			    float a2 = (c1.y - c2.y) / (c1.x - c2.x);
-			    if (a1 != a2) {
-				    float b2 = c1.y - a2 * c1.x;
-				    float x = (b2 - b1) / (a1 - a2);
-					//printf("x = %f\n", x);
-					/*printf("start ");
-					start.print();
-					printf("stop ");
-					stop.print();
-					printf("1.02 * x = %f 0.98 * x = %f\n", 1.02 * x, 0.98 * x);*/
-				    if (((start.x < 0.98 * x && stop->x > 1.02 * x) || (start.x > 1.02 * x && stop->x < 0.98 * x))
-						&& ((c1.x < 0.98 * x && c2.x > 1.02 * x) || (c1.x > 1.02 * x && c2.x < 0.98 * x))) {
-					    //printf("return\n");
-						intersection++;
-				    }
-			 	}
-		    } else {
-				if ((start.x < c1.x && stop->x > c1.x) || (start.x > c1.x && stop->x < c1.x)) {
-			    	float y = a1 * c1.x + b1;
-					//printf("y = %f c1.y = %f c2.y = %f\n", y, c1.y, c2.y);
-			    	if ((c1.y < 0.98 * y && c2.y > 1.02 * y) || (c1.y > 1.02 * y && c2.y < 0.98 * y)) {
-				   		intersection++;
-			    	}
-				}
-		    }
+int isInside(Point point, Obstacle* obstacle) {
+	int signe =signof(determinant(point, obstacle->corners[0], obstacle->corners[1]));
+	for (int i = 1; i < 4; i++) {
+		signe = signof(determinant(point, obstacle->corners[i], obstacle->corners[i%4]));
+		if(signe != signof(determinant(point, obstacle->corners[i], obstacle->corners[i%4]))) {
+			return 0;
 		}
-		return 0;
-	} else {
-		//printf("else");
-		for (int i = 0; i < 4; i++) {
-			Point c1 = o->corners[i%4];
-			Point c2 = o->corners[(i+1)%4];
-			if ((c1.x < start.x && c2.x > start.x) || (c1.x > start.x && c2.x < start.x)) {
-				if (c1.x != c2.x) {
-					float a2 = (c1.y - c2.y) / (c1.x - c2.x);
-					float b2 = c1.y - a2 * c1.x;
-					float y = a2 * start.x + b2;
-					if ((start.y < y && stop->y > y) || (start.y > y && stop->y < y)) {
-						intersection++;
-					}
-				}
-			}
-		}
-		return 0;
 	}
-	//printf("error");
-	return 5;
+	return 1;
 }
 
+//Donne le signe du paramètre
+int signof(int x) {
+	if(x >= 0)
+		return 1;
+	return -1;
+}
+
+//Calcul det(p1p, p1p2)
+int determinant(Point p, Point p1, Point p2) {
+	return (p.x - p1.x)*(p2.y - p1.y) - (p.y - p1.y) * (p2.x - p1.x);
+}
