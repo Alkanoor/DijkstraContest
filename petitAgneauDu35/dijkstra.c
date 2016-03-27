@@ -4,6 +4,7 @@
 
 #define PI 3.14159265
 #define INT_MAX 10000
+#define MARGIN 0
 
 typedef struct Point {
 	int x;
@@ -29,8 +30,8 @@ typedef struct Obstacle {
 
 
 Node* nextPivot(Node* map[], int xMax, int yMax);
-void init_obstacle(Obstacle* obstacle, int xPos, int yPos, int halfWidth, int halfHeight, int angle);
-void set_obstacle(Node* map[], Obstacle* obstacle, int xMax, int yMax);
+void init_obstacle(Obstacle* obstacle, int xPos, int yPos, int halfWidth, int halfHeight, int angle, int radius);
+void set_obstacle(Node* map[], Obstacle* obstacle, int xMax, int yMax, int radius);
 int isInside(Point, Obstacle*);
 int signof(int);
 int determinant(Point, Point, Point);
@@ -65,7 +66,7 @@ int main(int argc, char* argv[]) {
 		scanf("%i[ \n]", &yPos);
 		scanf("%i[ \n]", &halfHeight);
 		scanf("%i", &angle);
-		init_obstacle(&obstacles[nbObstacles], xPos, yPos, halfWidth, halfHeight, angle);
+		init_obstacle(&obstacles[nbObstacles], xPos, yPos, halfWidth, halfHeight, angle, radius);
 		nbObstacles++;
 	}
 	
@@ -83,14 +84,12 @@ int main(int argc, char* argv[]) {
 	}
 
 	for(int i = 0; i < nbObstacles; i++) {
-		set_obstacle(map, &obstacles[i], xMax, yMax);
+		set_obstacle(map, &obstacles[i], xMax, yMax, radius);
 	}
 
 	//Initialisation du pivot initial (point de depart)
 	map[xStart * yMax + yStart]->A = 1;
 	map[xStart * yMax + yStart]->distance = 0;
-	//TO DO : inclure les obstacles dans le tableau
-
 	Node* pivot = map[xStart * yMax + yStart];
 	int x, y;
 	Node* cur;
@@ -115,8 +114,9 @@ int main(int argc, char* argv[]) {
 		}
 		pivot = nextPivot(map, xMax, yMax);
 		pivot->A = 1;
-		if(pivot->point.x == xStop && pivot->point.y == yStop)
+		if(pivot->point.x == xStop && pivot->point.y == yStop) {
 			break;
+		}
 	}
 	
 	//Recuperation du nombre de noeuds sur le chemin
@@ -191,36 +191,34 @@ int min(int a, int b) {
 	return b;
 }
 
-void init_obstacle(Obstacle* obstacle, int xPos, int yPos, int halfWidth, int halfHeight, int angle) {
+void init_obstacle(Obstacle* obstacle, int xPos, int yPos, int halfWidth, int halfHeight, int angle, int radius) {
 	obstacle->xPos = xPos;
 	obstacle->yPos = yPos;
 	obstacle->halfWidth = halfWidth;
 	obstacle->halfHeight = halfHeight;
 	obstacle->angle = angle;
 	Point corner;
-	int radius = 0;
-	int margin = 0;
 	//Top Left Corner
-	corner.x = xPos - (halfWidth * dcos(-angle) - halfHeight * dsin(-angle)) - radius - margin;
-	corner.y = yPos + (halfHeight * dcos(-angle) + halfWidth * dsin(-angle)) + radius + margin;
+	corner.x = xPos - (halfWidth * dcos(-angle) - halfHeight * dsin(-angle)) - radius - MARGIN;
+	corner.y = yPos + (halfHeight * dcos(-angle) + halfWidth * dsin(-angle)) + radius + MARGIN;
 	obstacle->corners[0] = corner;
 	//Top Right Corner
-	corner.x = xPos + (halfWidth * dcos(-angle) + halfHeight * dsin(-angle)) + radius + margin;
-	corner.y = yPos + (halfHeight * dcos(-angle) - halfWidth * dsin(-angle)) + radius + margin;
+	corner.x = xPos + (halfWidth * dcos(-angle) + halfHeight * dsin(-angle)) + radius + MARGIN;
+	corner.y = yPos + (halfHeight * dcos(-angle) - halfWidth * dsin(-angle)) + radius + MARGIN;
 	obstacle->corners[1] = corner;
 	//Bottom Right Corner
-	corner.x = xPos + (halfWidth * dcos(-angle) - halfHeight * dsin(-angle)) + radius + margin;
-	corner.y = yPos - (halfHeight * dcos(-angle) + halfWidth * dsin(-angle)) - radius - margin;
+	corner.x = xPos + (halfWidth * dcos(-angle) - halfHeight * dsin(-angle)) + radius + MARGIN;
+	corner.y = yPos - (halfHeight * dcos(-angle) + halfWidth * dsin(-angle)) - radius - MARGIN;
 	obstacle->corners[2] = corner;
 	//Bottom Left Corner
-	corner.x = xPos - (halfWidth * dcos(-angle) + halfHeight * dsin(-angle)) - radius - margin;
-	corner.y = yPos - (halfHeight * dcos(-angle) - halfWidth * dsin(-angle)) - radius - margin;
+	corner.x = xPos - (halfWidth * dcos(-angle) + halfHeight * dsin(-angle)) - radius - MARGIN;
+	corner.y = yPos - (halfHeight * dcos(-angle) - halfWidth * dsin(-angle)) - radius - MARGIN;
 	obstacle->corners[3] = corner;
 }
 
-void set_obstacle(Node* map[], Obstacle* obstacle, int xMax, int yMax) {
+void set_obstacle(Node* map[], Obstacle* obstacle, int xMax, int yMax, int radius) {
 	//Test uniquement les points qui ont une chance d'etre dans l'obstacle
-	int half_diag = sqrt(obstacle->halfWidth * obstacle->halfWidth + obstacle->halfHeight * obstacle->halfHeight);
+	int half_diag = sqrt(obstacle->halfWidth * obstacle->halfWidth + obstacle->halfHeight * obstacle->halfHeight) + 2 * (radius + MARGIN);
 	for (int i = max(0, obstacle->xPos - half_diag); i < min (xMax, obstacle->xPos + half_diag); i++) {
 		for (int j = max(0, obstacle->yPos - half_diag); j < min (yMax, obstacle->yPos + half_diag); j++) {
 			if(isInside(map[i * yMax + j]->point, obstacle)) {
