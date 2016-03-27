@@ -29,7 +29,7 @@ typedef struct Obstacle {
 } Obstacle;
 
 
-Node* nextPivot(Node* map[], int xMax, int yMax);
+Node* nextPivot(Node* map[], int xMax, int yMax, int margin);
 void init_obstacle(Obstacle* obstacle, int xPos, int yPos, int halfWidth, int halfHeight, int angle, int radius);
 void set_obstacle(Node* map[], Obstacle* obstacle, int xMax, int yMax, int radius);
 int isInside(Point, Obstacle*);
@@ -50,26 +50,13 @@ int main(int argc, char* argv[]) {
 	scanf("%i[ \n]", &yStart);
 	scanf("%i[ \n]", &xStop);
 	scanf("%i[ \n]", &yStop);
-	//printf("%i %i %i %i %i %i %i\n", xMax, yMax, radius, xStart, yStart, xStop, yStop);
 
 	//Recuperation des coordonnees des obstacles
 	int nbObstacles = 0;
 	Obstacle* obstacles = NULL;
 	int xPos, yPos, halfWidth, halfHeight, angle;
-	while(scanf("%i[ \n]", &xPos) != EOF) {
-		if (feof(stdin))
-			break;
-		//Allocate space for a new obstacle
-		obstacles = (Obstacle*)realloc(obstacles, (nbObstacles + 1) * sizeof(Obstacle));
-		//Fill the data about the obstacle
-		scanf("%i[ \n]", &halfWidth);
-		scanf("%i[ \n]", &yPos);
-		scanf("%i[ \n]", &halfHeight);
-		scanf("%i", &angle);
-		init_obstacle(&obstacles[nbObstacles], xPos, yPos, halfWidth, halfHeight, angle, radius);
-		nbObstacles++;
-	}
-	
+
+	//Initialization of the map
 	Node* map[xMax * yMax];
 	for (int i = 0; i < xMax; i++) {
 		for (int j = 0; j < yMax; j++) {
@@ -83,26 +70,42 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
-	for(int i = 0; i < nbObstacles; i++) {
-		set_obstacle(map, &obstacles[i], xMax, yMax, radius);
+
+
+	while(scanf("%i[ \n]", &xPos) != EOF) {
+		if (feof(stdin))
+			break;
+		//Allocate space for a new obstacle
+		obstacles = (Obstacle*)realloc(obstacles, (nbObstacles + 1) * sizeof(Obstacle));
+		//Fill the data about the obstacle
+		scanf("%i[ \n]", &halfWidth);
+		scanf("%i[ \n]", &yPos);
+		scanf("%i[ \n]", &halfHeight);
+		scanf("%i", &angle);
+		init_obstacle(&obstacles[nbObstacles], xPos, yPos, halfWidth, halfHeight, angle, radius);
+		set_obstacle(map, &obstacles[nbObstacles], xMax, yMax, radius);
+		nbObstacles++;
 	}
 
 	//Initialisation du pivot initial (point de depart)
 	map[xStart * yMax + yStart]->A = 1;
 	map[xStart * yMax + yStart]->distance = 0;
 	Node* pivot = map[xStart * yMax + yStart];
+	
 	int x, y;
 	Node* cur;
+	int margin = radius + MARGIN;
+	
+	//Beginning of the algorithm
 	for (int i = 0; i < xMax * yMax - 1; i++) {
 		//Pour l'ensemble des voisins de pivot
 		for(int j = -1; j <= 1; j++) {
 			for (int k = -1; k <= 1; k++) {
 				//Sans compter le pivot evidemment
-				if (i != 0 || j != 0) {
+				if (j != 0 || k != 0) {
 					x = pivot->point.x + j;
 					y = pivot->point.y + k;
-					//printf("x = %i, y = %i\n", x, y);
-					if (x >= 0 && x < xMax && y >= 0 && y < yMax && map[x * yMax + y]->accessible && map[x * yMax + y]->A == 0) {
+					if (map[x * yMax + y]->accessible && map[x * yMax + y]->A == 0) {
 						cur = map[x * yMax + y];
 						if(pivot->distance + 1 < cur->distance) {
 							cur->distance = pivot->distance + 1;
@@ -112,8 +115,9 @@ int main(int argc, char* argv[]) {
 				}
 			}
 		}
-		pivot = nextPivot(map, xMax, yMax);
+		pivot = nextPivot(map, xMax, yMax, margin);
 		pivot->A = 1;
+		//On s'arrete des qu'on a atteint la destination
 		if(pivot->point.x == xStop && pivot->point.y == yStop) {
 			break;
 		}
@@ -153,21 +157,20 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
-Node* nextPivot(Node* map[], int xMax, int yMax) {
+Node* nextPivot(Node* map[], int xMax, int yMax, int margin) {
 	//return the next pivot
 	Node* pivot = (Node*)malloc(sizeof(Node));
-	int freeMemory = 0;
+	//Keep track of the address of the space allocated to free it before returning
+	Node* p = pivot;
 	pivot->distance = INT_MAX;
-	for (int i = 0; i < xMax * yMax; i++) {
-		if(map[i]->accessible == 1 && map[i]->A == 0 && map[i]->distance < pivot->distance) {
-			if (!freeMemory) {
-				//Release the memory allocated at the beginning
-				free(pivot);
-				freeMemory = 1;
+	for (int x = margin; x <= xMax -margin; x++) {
+		for (int y = margin; y <= yMax - margin; y++) {
+			if(map[x * yMax + y]->accessible == 1 && map[x * yMax + y]->A == 0 && map[x * yMax + y]->distance < pivot->distance) {
+				pivot = map[x * yMax + y];
 			}
-			pivot = map[i];
 		}
 	}
+	free(p);
 	return pivot;
 }
 
