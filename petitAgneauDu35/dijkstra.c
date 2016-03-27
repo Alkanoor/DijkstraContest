@@ -4,7 +4,7 @@
 
 #define PI 3.14159265
 #define INT_MAX 10000
-#define MARGIN 0
+#define MARGIN 1
 
 typedef struct Point {
 	int x;
@@ -35,6 +35,15 @@ void set_obstacle(Node* map[], Obstacle* obstacle, int xMax, int yMax, int radiu
 int isInside(Point, Obstacle*);
 int signof(int);
 int determinant(Point, Point, Point);
+
+void printCost(Node* map[], int xMax, int yMax) {
+	for (int x = 0; x < xMax; x++) {
+		for (int y = 0; y < yMax; y++) {
+			printf("%i ", map[x * yMax + y]->distance);
+		}
+		printf("\n");
+	}
+}
 
 int main(int argc, char* argv[]) {
 	if (argc != 1) {
@@ -92,7 +101,7 @@ int main(int argc, char* argv[]) {
 	map[xStart * yMax + yStart]->distance = 0;
 	Node* pivot = map[xStart * yMax + yStart];
 	
-	int x, y;
+	int x, y, cost;
 	Node* cur;
 	int margin = radius + MARGIN;
 	
@@ -107,8 +116,12 @@ int main(int argc, char* argv[]) {
 					y = pivot->point.y + k;
 					if (map[x * yMax + y]->accessible && map[x * yMax + y]->A == 0) {
 						cur = map[x * yMax + y];
-						if(pivot->distance + 1 < cur->distance) {
-							cur->distance = pivot->distance + 1;
+						if(j == 0 || k == 0)
+							cost = 2;
+						else
+							cost = 3;
+						if(pivot->distance + cost < cur->distance) {
+							cur->distance = pivot->distance + cost;
 							cur->pere = pivot;
 						}
 					}
@@ -122,7 +135,7 @@ int main(int argc, char* argv[]) {
 			break;
 		}
 	}
-	
+
 	//Recuperation du nombre de noeuds sur le chemin
 	x = xStop;
 	y = yStop;
@@ -154,6 +167,7 @@ int main(int argc, char* argv[]) {
 	for (int i = 0; i < 2* nb; i++) {
 		printf("%i ", path[i]);
 	}
+	//printCost(map, xMax, yMax);
 	return 0;
 }
 
