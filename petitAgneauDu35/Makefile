@@ -1,8 +1,8 @@
 CC := gcc
 CFLAGS := -O2 -std=gnu99 -Wall -Wextra -lm
-.PHONY := clean dijkstra
+.PHONY := clean 
 
-dikstra : dijkstra.o utils.o
+dijkstra : dijkstra.o utils.o
 	$(CC) $(CFLAGS) $^ -o $@
 
 clean :
