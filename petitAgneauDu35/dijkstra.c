@@ -1,15 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 #include "dijkstra.h"
 #include "utils.h"
 
 int main(int argc, char* argv[]) {
-	if (argc != 1) {
-		printf("Syntax : %s\n", argv[0]);
+	if (argc > 2 || (argc == 2 && strcmp(argv[1], "map") != 0)) {
+		printf("Syntax : %s [map]\n", argv[0]);
 		return 1;
 	}
-	int xMax, yMax, radius, xStart, yStart, xStop, yStop;
+	int xMax, yMax, radius, xStart, yStart, xStop, yStop, distance_map;
+	if(argc == 2 && strcmp(argv[1], "map") == 0)
+		distance_map = 1;
+	else
+		distance_map = 0;
 
 	scanf("%i[ \n]", &xMax);
 	scanf("%i[ \n]", &yMax);
@@ -126,8 +131,11 @@ int main(int argc, char* argv[]) {
 	for (int i = 0; i < 2* nb; i++) {
 		printf("%i ", path[i]);
 	}
-	printf("\n\n");
-	//printCost(map, xMax, yMax);
+	
+	if (distance_map) {
+		printf("\n\n");
+		printCost(map, xMax, yMax);
+	}
 	return 0;
 }
 
