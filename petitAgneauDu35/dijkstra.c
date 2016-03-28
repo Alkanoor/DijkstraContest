@@ -3,7 +3,7 @@
 #include <math.h>
 
 #define PI 3.14159265
-#define INT_MAX 10000
+#define INT_MAX 20000
 #define MARGIN 0
 
 typedef struct Point {
@@ -133,7 +133,6 @@ int main(int argc, char* argv[]) {
 		}
 		pivot = nextPivot(map, xMax, yMax, margin);
 		pivot->A = 1;
-		//printf("pivot x = %i y = %i\n", pivot->point.x, pivot->point.y);
 		//On s'arrete des qu'on a atteint la destination
 		if(pivot->point.x == xStop && pivot->point.y == yStop) {
 			break;
@@ -172,7 +171,7 @@ int main(int argc, char* argv[]) {
 		printf("%i ", path[i]);
 	}
 	printf("\n\n");
-	printCost(map, xMax, yMax);
+	//printCost(map, xMax, yMax);
 	return 0;
 }
 
