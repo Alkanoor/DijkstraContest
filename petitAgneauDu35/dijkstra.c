@@ -4,7 +4,7 @@
 
 #define PI 3.14159265
 #define INT_MAX 10000
-#define MARGIN 1
+#define MARGIN 0
 
 typedef struct Point {
 	int x;
@@ -37,9 +37,12 @@ int signof(int);
 int determinant(Point, Point, Point);
 
 void printCost(Node* map[], int xMax, int yMax) {
-	for (int x = 0; x < xMax; x++) {
-		for (int y = 0; y < yMax; y++) {
-			printf("%i ", map[x * yMax + y]->distance);
+	for (int y = yMax - 1; y >= 0; y--) {
+		for (int x = 0; x < xMax; x++) {
+			if(map[x * yMax + y]->distance == INT_MAX)
+				printf("-1 ");
+			else
+				printf("%i ", map[x * yMax + y]->distance);
 		}
 		printf("\n");
 	}
@@ -119,7 +122,7 @@ int main(int argc, char* argv[]) {
 						if(j == 0 || k == 0)
 							cost = 2;
 						else
-							cost = 3;
+							cost = 3; //Higher cost for diagonals
 						if(pivot->distance + cost < cur->distance) {
 							cur->distance = pivot->distance + cost;
 							cur->pere = pivot;
@@ -130,6 +133,7 @@ int main(int argc, char* argv[]) {
 		}
 		pivot = nextPivot(map, xMax, yMax, margin);
 		pivot->A = 1;
+		//printf("pivot x = %i y = %i\n", pivot->point.x, pivot->point.y);
 		//On s'arrete des qu'on a atteint la destination
 		if(pivot->point.x == xStop && pivot->point.y == yStop) {
 			break;
@@ -167,7 +171,8 @@ int main(int argc, char* argv[]) {
 	for (int i = 0; i < 2* nb; i++) {
 		printf("%i ", path[i]);
 	}
-	//printCost(map, xMax, yMax);
+	printf("\n\n");
+	printCost(map, xMax, yMax);
 	return 0;
 }
 
@@ -177,8 +182,8 @@ Node* nextPivot(Node* map[], int xMax, int yMax, int margin) {
 	//Keep track of the address of the space allocated to free it before returning
 	Node* p = pivot;
 	pivot->distance = INT_MAX;
-	for (int x = margin; x <= xMax -margin; x++) {
-		for (int y = margin; y <= yMax - margin; y++) {
+	for (int x = margin; x < xMax - margin; x++) {
+		for (int y = margin; y < yMax - margin; y++) {
 			if(map[x * yMax + y]->accessible == 1 && map[x * yMax + y]->A == 0 && map[x * yMax + y]->distance < pivot->distance) {
 				pivot = map[x * yMax + y];
 			}
@@ -239,6 +244,7 @@ void set_obstacle(Node* map[], Obstacle* obstacle, int xMax, int yMax, int radiu
 	for (int i = max(0, obstacle->xPos - half_diag); i < min (xMax, obstacle->xPos + half_diag); i++) {
 		for (int j = max(0, obstacle->yPos - half_diag); j < min (yMax, obstacle->yPos + half_diag); j++) {
 			if(isInside(map[i * yMax + j]->point, obstacle)) {
+				//printf("map[%i][%i] obstacle\n", i, j);
 				map[i * yMax + j]->accessible = 0;
 			}
 		}
@@ -250,10 +256,9 @@ void set_obstacle(Node* map[], Obstacle* obstacle, int xMax, int yMax, int radiu
  * return 1 : inside
  */
 int isInside(Point point, Obstacle* obstacle) {
-	int signe =signof(determinant(point, obstacle->corners[0], obstacle->corners[1]));
+	int signe = signof(determinant(point, obstacle->corners[0], obstacle->corners[1]));
 	for (int i = 1; i < 4; i++) {
-		signe = signof(determinant(point, obstacle->corners[i], obstacle->corners[i%4]));
-		if(signe != signof(determinant(point, obstacle->corners[i], obstacle->corners[i%4]))) {
+		if(signe != signof(determinant(point, obstacle->corners[i], obstacle->corners[(i + 1) % 4]))) {
 			return 0;
 		}
 	}
@@ -269,5 +274,6 @@ int signof(int x) {
 
 //Calcul det(p1p, p1p2)
 int determinant(Point p, Point p1, Point p2) {
+	//printf("x1 = %i y1 = %i x2 = %i y2 = %i x = %i y = %i\n", p1.x, p1.y, p2.x, p2.y, p.x, p.y);
 	return (p.x - p1.x)*(p2.y - p1.y) - (p.y - p1.y) * (p2.x - p1.x);
 }
