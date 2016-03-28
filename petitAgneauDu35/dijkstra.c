@@ -1,52 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-
-#define PI 3.14159265
-#define INT_MAX 20000
-#define MARGIN 0
-
-typedef struct Point {
-	int x;
-	int y;
- } Point;
-
-typedef struct Node {
-	int accessible;
-	int A;
-	int distance;
-	Point point;
-	struct Node* pere;
-} Node;
-
-typedef struct Obstacle {
-	int xPos;
-	int yPos;
-	int halfWidth;
-	int halfHeight;
-	int angle;
-	Point corners[4];
-} Obstacle;
-
-
-Node* nextPivot(Node* map[], int xMax, int yMax, int margin);
-void init_obstacle(Obstacle* obstacle, int xPos, int yPos, int halfWidth, int halfHeight, int angle, int radius);
-void set_obstacle(Node* map[], Obstacle* obstacle, int xMax, int yMax, int radius);
-int isInside(Point, Obstacle*);
-int signof(int);
-int determinant(Point, Point, Point);
-
-void printCost(Node* map[], int xMax, int yMax) {
-	for (int y = yMax - 1; y >= 0; y--) {
-		for (int x = 0; x < xMax; x++) {
-			if(map[x * yMax + y]->distance == INT_MAX)
-				printf("-1 ");
-			else
-				printf("%i ", map[x * yMax + y]->distance);
-		}
-		printf("\n");
-	}
-}
+#include "dijkstra.h"
+#include "utils.h"
 
 int main(int argc, char* argv[]) {
 	if (argc != 1) {
@@ -192,26 +148,6 @@ Node* nextPivot(Node* map[], int xMax, int yMax, int margin) {
 	return pivot;
 }
 
-int dcos (int angle) {
-	return cos(angle * PI / 180);
-}
-
-int dsin (int angle) {
-	return sin(angle * PI / 180);
-}
-
-int max(int a, int b) {
-	if (a < b)
-		return b;
-	return a;
-}
-
-int min(int a, int b) {
-	if (a < b)
-		return a;
-	return b;
-}
-
 void init_obstacle(Obstacle* obstacle, int xPos, int yPos, int halfWidth, int halfHeight, int angle, int radius) {
 	obstacle->xPos = xPos;
 	obstacle->yPos = yPos;
@@ -250,10 +186,6 @@ void set_obstacle(Node* map[], Obstacle* obstacle, int xMax, int yMax, int radiu
 	}
 }
 
-/*
- * return 0 : outside
- * return 1 : inside
- */
 int isInside(Point point, Obstacle* obstacle) {
 	int signe = signof(determinant(point, obstacle->corners[0], obstacle->corners[1]));
 	for (int i = 1; i < 4; i++) {
@@ -264,15 +196,16 @@ int isInside(Point point, Obstacle* obstacle) {
 	return 1;
 }
 
-//Donne le signe du paramètre
-int signof(int x) {
-	if(x >= 0)
-		return 1;
-	return -1;
+void printCost(Node* map[], int xMax, int yMax) {
+	for (int y = yMax - 1; y >= 0; y--) {
+		for (int x = 0; x < xMax; x++) {
+			if(map[x * yMax + y]->distance == INT_MAX)
+				printf("-1 ");
+			else
+				printf("%i ", map[x * yMax + y]->distance);
+		}
+		printf("\n");
+	}
 }
 
-//Calcul det(p1p, p1p2)
-int determinant(Point p, Point p1, Point p2) {
-	//printf("x1 = %i y1 = %i x2 = %i y2 = %i x = %i y = %i\n", p1.x, p1.y, p2.x, p2.y, p.x, p.y);
-	return (p.x - p1.x)*(p2.y - p1.y) - (p.y - p1.y) * (p2.x - p1.x);
-}
+
