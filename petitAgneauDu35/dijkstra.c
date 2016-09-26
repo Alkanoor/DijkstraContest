@@ -64,11 +64,11 @@ int main(int argc, char* argv[]) {
 	map[xStart * yMax + yStart]->A = 1;
 	map[xStart * yMax + yStart]->distance = 0;
 	Node* pivot = map[xStart * yMax + yStart];
-	
+
 	int x, y, cost;
 	Node* cur;
 	int margin = radius + MARGIN;
-	
+
 	//Beginning of the algorithm
 	for (int i = 0; i < xMax * yMax - 1; i++) {
 		//Pour l'ensemble des voisins de pivot
@@ -76,6 +76,7 @@ int main(int argc, char* argv[]) {
 			for (int k = -1; k <= 1; k++) {
 				//Sans compter le pivot evidemment
 				if (j != 0 || k != 0) {
+					//printf("i = %i, j = %i, k = %i\n", i, j, k);
 					x = pivot->point.x + j;
 					y = pivot->point.y + k;
 					if (map[x * yMax + y]->accessible && map[x * yMax + y]->A == 0) {
@@ -131,7 +132,7 @@ int main(int argc, char* argv[]) {
 	for (int i = 0; i < 2* nb; i++) {
 		printf("%i ", path[i]);
 	}
-	
+
 	if (distance_map) {
 		printf("\n\n");
 		printCost(map, xMax, yMax);
@@ -215,5 +216,3 @@ void printCost(Node* map[], int xMax, int yMax) {
 		printf("\n");
 	}
 }
-
-
