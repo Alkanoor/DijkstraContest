@@ -93,7 +93,7 @@ int main(int argc, char* argv[]) {
 				}
 			}
 		}
-		pivot = nextPivot(map, xMax, yMax, margin);
+		pivot = nextPivot(map, xMax, yMax, margin, pivot->distance);
 		pivot->A = 1;
 		//On s'arrete des qu'on a atteint la destination
 		if(pivot->point.x == xStop && pivot->point.y == yStop) {
@@ -140,7 +140,7 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
-Node* nextPivot(Node* map[], int xMax, int yMax, int margin) {
+Node* nextPivot(Node* map[], int xMax, int yMax, int margin, int distMin) {
 	//return the next pivot
 	Node* pivot = (Node*)malloc(sizeof(Node));
 	//Keep track of the address of the space allocated to free it before returning
@@ -150,6 +150,13 @@ Node* nextPivot(Node* map[], int xMax, int yMax, int margin) {
 		for (int y = margin; y < yMax - margin; y++) {
 			if(map[x * yMax + y]->accessible == 1 && map[x * yMax + y]->A == 0 && map[x * yMax + y]->distance < pivot->distance) {
 				pivot = map[x * yMax + y];
+				/*
+				La distance jusqu'au prochain pivot est au moins aussi grande que celle jusqu'à l'ancien pivot.
+				*/
+				if (pivot->distance == distMin) {
+					free(p);
+					return pivot;
+				}
 			}
 		}
 	}

@@ -38,7 +38,7 @@ typedef struct Obstacle {
  * Warning : this function doesn't modify the node
  * In particular, it's A field is not set by this function
  */
-Node* nextPivot(Node* map[], int xMax, int yMax, int margin);
+Node* nextPivot(Node* map[], int xMax, int yMax, int margin, int distMin);
 
 /*
  * Initialize the Obstacle variable provided with the given values
@@ -62,7 +62,7 @@ int isInside(Point, Obstacle*);
 /*
  * Display the distance of every node in the map
  * A value of -1 means that the distance to this point
- * has not been calculated : 
+ * has not been calculated :
  *	- this point is not accessible
  *  - the destination has been reached before updating
  *		the distance value of this point
