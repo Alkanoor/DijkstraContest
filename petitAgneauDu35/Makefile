@@ -4,8 +4,8 @@ LINKFLAGS := -lm
 
 .PHONY := clean
 
-dijkstra : dijkstra.o utils.o
-	$(CC) $(CFLAGS) $^ -o $@ $(LINKFLAGS) 
+dijkstra : dijkstra.o utils.o path.o
+	$(CC) $(CFLAGS) $^ -o $@ $(LINKFLAGS)
 
 clean :
 	rm -f dijkstra

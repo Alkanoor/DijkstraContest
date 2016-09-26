@@ -4,6 +4,7 @@
 #include <string.h>
 #include "dijkstra.h"
 #include "utils.h"
+#include "path.h"
 
 int main(int argc, char* argv[]) {
 	if (argc > 2 || (argc == 2 && strcmp(argv[1], "map") != 0)) {
@@ -129,9 +130,12 @@ int main(int argc, char* argv[]) {
 	path[1] = yStart;
 
 	//Affichage du chemin
-	for (int i = 0; i < 2* nb; i++) {
+	/*for (int i = 0; i < 2* nb; i++) {
 		printf("%i ", path[i]);
 	}
+
+	printf("\n\n");*/
+	concat_path(path, nb);
 
 	if (distance_map) {
 		printf("\n\n");
