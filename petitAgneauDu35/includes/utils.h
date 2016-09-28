@@ -1,7 +1,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#include "dijkstra.h"
+#include "struct.h"
 #define PI 3.14159265
 
 /*

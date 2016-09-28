@@ -15,8 +15,13 @@ dijkstra : $(OUTPUT)dijkstra.o $(OUTPUT)utils.o $(OUTPUT)path.o
 OUT:
 	-mkdir $(OUTPUT)
 
+mapMaker: $(OUTPUT)utils.o $(OUTPUT)mapMaker.o
+	$(CC) $(CFLAGS) $^ -o $@ $(LINKFLAGS)
+
+
 clean :
 	rm -f dijkstra
+	rm -f mapMaker
 	rm -f utils
 	rm -f $(OUTPUT)*.o
 	-rmdir $(OUTPUT)

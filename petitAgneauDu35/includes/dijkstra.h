@@ -1,6 +1,8 @@
 #ifndef DIJKSTRA_H
 #define DIJKSTRA_H
 
+#include "struct.h"
+
 /*
  * Initial distance of every point (except the starting point)
  */
@@ -16,28 +18,6 @@
  */
 #define WIDTH 300
 #define LENGTH 200
-
-typedef struct Point {
-	int x;
-	int y;
- } Point;
-
-typedef struct Node {
-	int accessible;
-	int A;
-	int distance;
-	Point point;
-	struct Node* pere;
-} Node;
-
-typedef struct Obstacle {
-	int xPos;
-	int yPos;
-	int halfWidth;
-	int halfHeight;
-	int angle;
-	Point corners[4];
-} Obstacle;
 
 /*
  * Return the node that must be used as the next pivot
