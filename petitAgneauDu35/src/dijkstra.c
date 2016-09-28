@@ -12,12 +12,17 @@ static int margin;
 // The map describing the table
 static Node* map[WIDTH * LENGTH];
 
+static Obstacle obstacle;
+
+static int xMax, yMax, radius, xStart, yStart, xStop, yStop, distance_map;
+
+static int xPos, yPos, halfWidth, halfHeight, angle;
+
 int main(int argc, char* argv[]) {
 	if (argc > 2 || (argc == 2 && strcmp(argv[1], "map") != 0)) {
 		printf("Syntax : %s [map]\n", argv[0]);
 		return 1;
 	}
-	int xMax, yMax, radius, xStart, yStart, xStop, yStop, distance_map;
 	if(argc == 2 && strcmp(argv[1], "map") == 0)
 		distance_map = 1;
 	else
@@ -35,9 +40,6 @@ int main(int argc, char* argv[]) {
 		return -1; // Error when reading input data
 
 	//Recuperation des coordonnees des obstacles
-	int nbObstacles = 0;
-	Obstacle* obstacles = NULL;
-	int xPos, yPos, halfWidth, halfHeight, angle;
 
 	//Initialization of the map
 	for (int i = 0; i < xMax; i++) {
@@ -52,13 +54,9 @@ int main(int argc, char* argv[]) {
 		}
 	}
 
-
-
 	while(scanf("%i[ \n]", &xPos) != EOF) {
 		if (feof(stdin))
 			break;
-		//Allocate space for a new obstacle
-		obstacles = (Obstacle*)realloc(obstacles, (nbObstacles + 1) * sizeof(Obstacle));
 		//Fill the data about the obstacle
 		ret = 0;
 		ret += scanf("%i[ \n]", &halfWidth);
@@ -67,9 +65,8 @@ int main(int argc, char* argv[]) {
 		ret += scanf("%i", &angle);
 		if (ret != 4)
 			break;
-		init_obstacle(&obstacles[nbObstacles], xPos, yPos, halfWidth, halfHeight, angle, radius);
-		set_obstacle(map, &obstacles[nbObstacles], xMax, yMax, radius);
-		nbObstacles++;
+		init_obstacle(&obstacle, xPos, yPos, halfWidth, halfHeight, angle, radius);
+		set_obstacle(map, &obstacle, xMax, yMax, radius);
 	}
 
 	//Initialisation du pivot initial (point de depart)
