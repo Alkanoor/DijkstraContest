@@ -6,6 +6,12 @@
 #include "utils.h"
 #include "path.h"
 
+// The margin to leave between the robots and the obstacles
+static int margin;
+
+// The map describing the table
+static Node* map[WIDTH * LENGTH];
+
 int main(int argc, char* argv[]) {
 	if (argc > 2 || (argc == 2 && strcmp(argv[1], "map") != 0)) {
 		printf("Syntax : %s [map]\n", argv[0]);
@@ -16,14 +22,17 @@ int main(int argc, char* argv[]) {
 		distance_map = 1;
 	else
 		distance_map = 0;
+	int ret = 0;
+	ret += scanf("%i[ \n]", &xMax); // No more used
+	ret += scanf("%i[ \n]", &yMax); // No more used
+	ret += scanf("%i[ \n]", &radius);
+	ret += scanf("%i[ \n]", &xStart);
+	ret += scanf("%i[ \n]", &yStart);
+	ret += scanf("%i[ \n]", &xStop);
+	ret += scanf("%i[ \n]", &yStop);
 
-	scanf("%i[ \n]", &xMax);
-	scanf("%i[ \n]", &yMax);
-	scanf("%i[ \n]", &radius);
-	scanf("%i[ \n]", &xStart);
-	scanf("%i[ \n]", &yStart);
-	scanf("%i[ \n]", &xStop);
-	scanf("%i[ \n]", &yStop);
+	if (ret != 7)
+		return -1; // Error when reading input data
 
 	//Recuperation des coordonnees des obstacles
 	int nbObstacles = 0;
@@ -31,7 +40,6 @@ int main(int argc, char* argv[]) {
 	int xPos, yPos, halfWidth, halfHeight, angle;
 
 	//Initialization of the map
-	Node* map[xMax * yMax];
 	for (int i = 0; i < xMax; i++) {
 		for (int j = 0; j < yMax; j++) {
 			map[i * yMax + j] = (Node*)malloc(sizeof(Node));
@@ -52,10 +60,13 @@ int main(int argc, char* argv[]) {
 		//Allocate space for a new obstacle
 		obstacles = (Obstacle*)realloc(obstacles, (nbObstacles + 1) * sizeof(Obstacle));
 		//Fill the data about the obstacle
-		scanf("%i[ \n]", &halfWidth);
-		scanf("%i[ \n]", &yPos);
-		scanf("%i[ \n]", &halfHeight);
-		scanf("%i", &angle);
+		ret = 0;
+		ret += scanf("%i[ \n]", &halfWidth);
+		ret += scanf("%i[ \n]", &yPos);
+		ret += scanf("%i[ \n]", &halfHeight);
+		ret += scanf("%i", &angle);
+		if (ret != 4)
+			break;
 		init_obstacle(&obstacles[nbObstacles], xPos, yPos, halfWidth, halfHeight, angle, radius);
 		set_obstacle(map, &obstacles[nbObstacles], xMax, yMax, radius);
 		nbObstacles++;
@@ -68,7 +79,7 @@ int main(int argc, char* argv[]) {
 
 	int x, y, cost;
 	Node* cur;
-	int margin = radius + MARGIN;
+	margin = radius + MARGIN;
 
 	//Beginning of the algorithm
 	for (int i = 0; i < xMax * yMax - 1; i++) {

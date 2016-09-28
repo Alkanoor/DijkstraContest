@@ -11,6 +11,12 @@
  */
 #define MARGIN 0
 
+/*
+ * These values are the dimension of the table
+ */
+#define WIDTH 300
+#define LENGTH 200
+
 typedef struct Point {
 	int x;
 	int y;
